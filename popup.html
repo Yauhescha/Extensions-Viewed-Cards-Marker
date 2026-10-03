@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Viewed Cards Marker</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 12px; width: 330px; }
+    h3 { margin: 0 0 10px 0; }
+    .row { margin: 8px 0; }
+    .muted { color: #666; font-size: 12px; }
+    button { padding: 7px 10px; border-radius: 8px; border: 1px solid #777; background: #f5f5f5; cursor: pointer; width: 100%; }
+    button:hover { filter: brightness(0.97); }
+    .status { min-height: 18px; font-size: 12px; color: #444; margin-top: 8px; }
+    .grid { display: grid; gap: 8px; }
+    .badge { display:inline-block; padding: 2px 6px; border-radius: 999px; background: #efefef; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h3>Viewed Cards Marker</h3>
+  <div class="row" id="siteInfo"></div>
+  <div class="grid">
+    <button id="btnGrant">Grant access for current site</button>
+    <button id="btnApply">Apply now</button>
+    <button id="btnSync">Open Recovery Sync</button>
+    <button id="btnOptions">Open settings</button>
+  </div>
+  <div class="status" id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Viewed Cards Marker",
+  "version": "1.0.2",
+  "description": "Recovery build: safely uploads large local history to Supabase in resumable batches and supports chunked export.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "downloads"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Viewed Cards Marker",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

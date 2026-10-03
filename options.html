@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Viewed Cards Marker Settings</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    h1, h2 { margin: 0 0 12px 0; }
+    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+    .panel { border: 1px solid #ddd; border-radius: 12px; padding: 16px; background: #fff; }
+    .stack { display: grid; gap: 10px; }
+    label { display: grid; gap: 4px; font-size: 14px; }
+    input[type="text"], input[type="number"], select, textarea { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #bbb; border-radius: 8px; font: inherit; }
+    textarea { min-height: 90px; resize: vertical; }
+    button { padding: 8px 12px; border-radius: 8px; border: 1px solid #777; background: #f5f5f5; cursor: pointer; }
+    button:hover { filter: brightness(0.97); }
+    .site-list { display: grid; gap: 8px; }
+    .site-row { display:flex; justify-content:space-between; gap:10px; align-items:center; border: 1px solid #e2e2e2; border-radius: 8px; padding: 8px; }
+    .small { font-size: 12px; color: #666; }
+    .toolbar { display:flex; gap:8px; flex-wrap:wrap; }
+    .recovery { border-color: #d69e2e; background: #fffaf0; }
+    .progress-wrap { width:100%; height:14px; border-radius:999px; background:#eee; overflow:hidden; }
+    .progress-bar { height:100%; width:0%; background:#666; transition:width .15s ease; }
+    .warning { color:#8a4b08; font-size:13px; }
+    @media (max-width: 700px) {
+      body { margin: 10px; }
+      .layout { grid-template-columns: 1fr; gap: 10px; }
+      .panel { padding: 12px; }
+      .toolbar > button { flex: 1 1 100%; }
+    }
+    pre { white-space: pre-wrap; word-break: break-word; background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Viewed Cards Marker</h1>
+  <div class="layout">
+    <section class="panel stack">
+      <div class="toolbar">
+        <button id="btnAddSite">Add site</button>
+        <button id="btnSaveAll">Save all</button>
+      </div>
+      <div id="siteList" class="site-list"></div>
+      <div class="small">Each site can have its own selectors, title cleanup rules, delay, buttons and page actions.</div>
+    </section>
+
+    <section class="stack">
+      <div class="panel stack recovery">
+        <h2>Chrome Recovery 1.0.2</h2>
+        <div class="warning">Designed to rescue a large existing local history. During recovery, avoid browsing configured sites so the local history does not change.</div>
+        <div id="recoveryInfo" class="small">Reading local history…</div>
+        <div class="progress-wrap"><div id="recoveryProgress" class="progress-bar"></div></div>
+        <div class="toolbar">
+          <button id="btnRecoveryStart">Start / resume Recovery Sync</button>
+          <button id="btnRecoveryInspect">Refresh status</button>
+          <button id="btnRecoveryReset">Reset checkpoint</button>
+          <button id="btnRecoveryExport">Safe export in parts</button>
+        </div>
+        <div class="small">Recovery Sync is push-only: it uploads local records to Supabase in batches and never replaces local history with server data.</div>
+        <pre id="recoveryStatus"></pre>
+      </div>
+
+      <div class="panel stack">
+        <h2>Site editor</h2>
+        <input type="hidden" id="siteId" />
+        <label>Name<input id="siteName" type="text" /></label>
+        <label>Enabled<select id="siteEnabled"><option value="true">true</option><option value="false">false</option></select></label>
+        <label>Host patterns (one per line)<textarea id="hostPatterns"></textarea></label>
+        <label>View page patterns (one per line)<textarea id="viewPagePatterns"></textarea></label>
+        <label>List page patterns (one per line)<textarea id="listPagePatterns"></textarea></label>
+        <label>Card selector<input id="cardSelector" type="text" /></label>
+        <label>Link selector<input id="linkSelector" type="text" /></label>
+        <label>Title selector<input id="titleSelector" type="text" /></label>
+        <label>Title source<select id="titleSource"><option value="selector">selector</option><option value="documentTitle">documentTitle</option><option value="linkText">linkText</option></select></label>
+        <label>Title transforms JSON<textarea id="titleTransforms"></textarea></label>
+        <label>Key strategy<select id="keyStrategy"><option value="normalizedTitle">normalizedTitle</option><option value="urlPathRegex">urlPathRegex</option><option value="customTemplate">customTemplate</option></select></label>
+        <label>Key regex<input id="keyRegex" type="text" /></label>
+        <label>Key template<input id="keyTemplate" type="text" /></label>
+        <label>Delay before applying, ms<input id="delayMs" type="number" min="0" step="50" /></label>
+        <label>Highlight mode<select id="highlightMode"><option value="cardClass">cardClass</option><option value="linkClass">linkClass</option></select></label>
+        <label>Custom highlight class (optional)<input id="highlightClass" type="text" /></label>
+        <label>Action buttons JSON<textarea id="actionButtons"></textarea></label>
+        <label>Page actions JSON<textarea id="pageActions"></textarea></label>
+        <label>Auto mark on view page<select id="autoMarkOnViewPage"><option value="true">true</option><option value="false">false</option></select></label>
+        <label>Auto apply on list page<select id="autoApplyOnListPage"><option value="true">true</option><option value="false">false</option></select></label>
+        <div class="toolbar">
+          <button id="btnSaveSite">Save site</button>
+          <button id="btnDeleteSite">Delete site</button>
+        </div>
+      </div>
+
+      <div class="panel stack">
+        <h2>Sync</h2>
+        <label>Provider<select id="syncProvider"><option value="none">none</option><option value="supabase">supabase</option></select></label>
+        <label>Supabase URL<input id="supabaseUrl" type="text" /></label>
+        <label>Supabase anon key<input id="supabaseAnonKey" type="text" /></label>
+        <label>History table<input id="historyTable" type="text" /></label>
+        <label>Sites table<input id="sitesTable" type="text" /></label>
+        <button id="btnSaveSync">Save sync settings</button>
+      </div>
+
+      <div class="panel stack">
+        <h2>Import / Export</h2>
+        <div class="toolbar">
+          <button id="btnExportHistory" disabled title="Use Safe export in parts above">Legacy history export disabled</button>
+          <button id="btnExportSettings">Export settings</button>
+          <button id="btnExportFull" disabled title="Use Safe export in parts during recovery">Legacy full backup disabled</button>
+        </div>
+        <label>Import JSON<textarea id="importJson"></textarea></label>
+        <div class="toolbar">
+          <button id="btnImportMerge">Import merge</button>
+          <button id="btnImportReplace">Import replace</button>
+        </div>
+        <pre id="status"></pre>
+      </div>
+    </section>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
